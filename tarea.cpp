@@ -1,6 +1,9 @@
 #include "mpi.h"
 #include <stdio.h>
+#include <set>
+#include <list>
 #include <map>
+#include <algorithm>
 #include <string>
 #include <iostream>
 #include <vector>
@@ -13,25 +16,27 @@ Estructura lista invertida
 struct indice_inverso
 {
 	string palabra;
-	set<string> doc;
+	list<string> doc;
 };
 
-bool comparar (const indice_inverso first, const indice_inverso second)
+bool comparar (const indice_inverso &first, const indice_inverso &second)
 {
 	return (first.palabra < second.palabra);
-}
+};
 
-void buscar_consulta(int cant_terminos, set<string> consultas, indice_inverso vector_index )
+void buscar_consulta(int cant_terminos, set<string> consultas, vector<indice_inverso> vector_index )
 {
-	set<string>::iterator iterador;
+	list<string>::iterator iterador;
+	int i,j,k;
 	for (i = 0; i < cant_terminos; i++)
 	{
 		for (j = 0; j < (consultas).size(); j++)
 		{
-			int palabra_encontrada = 0;
+			string palabra_encontrada;
 			for (k = 0; k != (vector_index).size(); k++)
 			{
-				if (palabra_encontrada.comparar(vector_index[k].palabra) == 0)
+				cout << palabra_encontrada.compare(vector_index[k].palabra);
+				if (palabra_encontrada.compare(vector_index[k].palabra) == 0)
 				{
 					palabra_encontrada = 1;
 					iterador = vector_index[k].doc.begin();
@@ -39,15 +44,15 @@ void buscar_consulta(int cant_terminos, set<string> consultas, indice_inverso ve
 					{
 						cout << *iterador << " ";
 						iterador++;
-					}
-				}
+					};
+				};
 				
-			}
+			};
 			
-		}
+		};
 
-	}
-}
+	};
+};
 main (int argc, char **argv)
 {
 	map<string, vector<string> > Documentos;
@@ -92,7 +97,8 @@ main (int argc, char **argv)
 	{
 		fscanf(pf, "%s", consulta);
 		cout << "consulta = " << consulta << endl;
-		(lista_consultas[i]).push_back(string(consulta)) // Agrega consulta a una lista.
+		(lista_consultas).insert(string(consulta)); // Agrega consulta a una lista.
+		
 	}
 
 fflush(stdout);
@@ -100,7 +106,7 @@ MPI_Barrier(MPI_COMM_WORLD);
 
 pair<string, vector<string> > objeto_par;
 map<string, vector<string> >:: iterator It;
-
+fflush(stdout);
 if (ID==3)
 {
 	for(It = Documentos.begin(); It != Documentos.end(); It++)
